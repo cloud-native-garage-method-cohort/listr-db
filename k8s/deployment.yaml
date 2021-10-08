@@ -15,8 +15,8 @@ spec:
         app.kubernetes.io/name: app
     spec:
       volumes:
-          name: postgres-pv-claim
-          PersistentVolumeClaim:
+        - name: postgres-pv-claim
+          persistentVolumeClaim:
             claimName: postgres-pv-claim
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
