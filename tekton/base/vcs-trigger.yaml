@@ -63,13 +63,13 @@ spec:
         serviceAccountName: build-bot
         params:
           - name: app-name
-            value: to-do-listr-db
+            value: listr-db
           - name: source-repo
             value: https://github.com/cloud-native-garage-method-cohort/listr-db
           - name: sha # introduce new param
             value: $(tt.params.sha) # use value from trigger event
           - name: source-image
-            value: quay.io/derinsolao/to-do-listr-db
+            value: quay.io/derinsolao/listr-db
         workspaces:
           - name: pipeline-shared-data
             volumeClaimTemplate:
