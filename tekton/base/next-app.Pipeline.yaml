@@ -32,21 +32,9 @@ spec:
       taskRef:
         name: git-clone
         kind: ClusterTask
-    - name: run-tests
-      taskRef:
-        name: npm
-      runAfter:
-        - clone-repository
-      params:
-        - name: ARGS
-          value:
-            - install-ci-test
-      workspaces:
-        - name: source # mounted in the directory source in the task
-          workspace: pipeline-shared-data # the volume name
     - name: create-image
       runAfter:
-        - run-tests
+        - clone-repository
       taskRef:
         name: buildah # build and push
         kind: ClusterTask
