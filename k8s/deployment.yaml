@@ -32,6 +32,7 @@ spec:
         volumeMounts:
         - mountPath: /var/lib/postgresql/data
           name: postgres-pv-claim
+          subPath: data
         env:
         - name: INGRESS_HOST
         - name: PROTOCOLS
