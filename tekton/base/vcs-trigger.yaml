@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: vcs-trigger
+  name: vcs-trigger-db
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: vcs-trigger
+  name: vcs-trigger-db
 rules:
   - apiGroups:
       - triggers.tekton.dev
@@ -33,19 +33,19 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: vcs-trigger
+  name: vcs-trigger-db
 subjects:
   - kind: ServiceAccount
-    name: vcs-trigger
+    name: vcs-trigger-db
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: vcs-trigger
+  name: vcs-trigger-db
 ---
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerTemplate
 metadata:
-  name: vcs-trigger
+  name: vcs-trigger-db
 spec:
   params:
       - name: source-repo
@@ -91,7 +91,7 @@ spec:
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerBinding
 metadata:
-  name: vcs-trigger
+  name: vcs-trigger-db
 spec:
   params:
     - name: source-repo
@@ -102,25 +102,25 @@ spec:
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: EventListener
 metadata:
-  name: vcs-trigger
+  name: vcs-trigger-db
 spec:
-  serviceAccountName: vcs-trigger
+  serviceAccountName: vcs-trigger-db
   triggers:
     - bindings:
-        - ref: vcs-trigger
+        - ref: vcs-trigger-db
       template:
-        name: vcs-trigger
+        name: vcs-trigger-db
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: vcs-trigger
+  name: vcs-trigger-db
 spec:
   port:
     targetPort: 8080
   to:
     kind: Service
-    name: el-vcs-trigger
+    name: el-vcs-trigger-db
     weight: 100
 
 
