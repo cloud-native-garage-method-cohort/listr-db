@@ -37,6 +37,8 @@ spec:
         - name: PROTOCOLS
         - name: LOG_LEVEL
           value: debug
+        - name: POSTGRES_HOST_AUTH_METHOD
+          value: trust
         resources: {}
         livenessProbe:
           failureThreshold: 3
