@@ -61,5 +61,7 @@ spec:
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         imagePullPolicy: IfNotPresent
+      securityContext:
+        fsGroup: 2000
   revisionHistoryLimit: 10
   progressDeadlineSeconds: 600
