@@ -14,9 +14,10 @@ spec:
         app.kubernetes.io/instance: app-instance
         app.kubernetes.io/name: app
     spec:
-      volumeMounts:
-        - mountPath: /var/lib/postgresql/data
+      volumes:
           name: postgres-pv-claim
+          PersistentVolumeClaim:
+            claimName: postgres-pv-claim
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
