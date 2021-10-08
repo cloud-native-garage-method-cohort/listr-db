@@ -62,6 +62,7 @@ spec:
         terminationMessagePolicy: File
         imagePullPolicy: IfNotPresent
       securityContext:
-        fsGroup: 2000
+        runAsUser: 1000
+        fsGroup: 1000
   revisionHistoryLimit: 10
   progressDeadlineSeconds: 600
