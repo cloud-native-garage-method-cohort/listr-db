@@ -1,0 +1,92 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline # Recipe, PipelineRun needed
+metadata:
+  name: mohamed-keerthana-listr-db-app-deploy
+spec:
+  params:
+    - name: source-repo
+      type: string
+      description: Source code repository
+    - name: source-image
+      type: string
+      description: Source image
+    - name: sha # support new param
+      type: string
+    - name: app-name
+      type: string
+      description: app name
+  workspaces: 
+    - name: pipeline-shared-data
+    - name: production-repository
+  tasks:
+    - name: clone-repository
+      params:
+        - name: url
+          value: "$(params.source-repo)"
+        - name: revision
+          value: "$(params.sha)" # use new param
+      workspaces:
+        - name: output
+          workspace: pipeline-shared-data
+      taskRef:
+        name: git-clone
+        kind: ClusterTask
+    - name: run-tests
+      taskRef:
+        name: npm
+      runAfter:
+        - clone-repository
+      params:
+        - name: ARGS
+          value:
+            - install-ci-test
+      workspaces:
+        - name: source # mounted in the directory source in the task
+          workspace: pipeline-shared-data # the volume name
+    - name: create-image
+      runAfter:
+        - run-tests
+      taskRef:
+        name: buildah # build and push
+        kind: ClusterTask
+      params:
+        - name: IMAGE
+          value: "$(params.source-image):$(tasks.clone-repository.results.commit)"
+      workspaces:
+        - name: source
+          workspace: pipeline-shared-data # the volume name
+    - name: create-configuration
+      runAfter:
+        - create-image
+      taskRef:
+        name: create-configuration
+      params:
+        - name: app-name
+          value: "$(params.app-name)"
+        - name: source-repo
+          value: "$(params.source-repo)"
+        - name: commit
+          value: "$(tasks.clone-repository.results.commit)"
+        - name: image-repo
+          value: "$(params.source-image)"
+        - name: runtime
+          value: "js"
+      workspaces:
+        - name: source
+          workspace: pipeline-shared-data
+    - name: deploy
+      params:
+        - name: app-namespace
+          value: "$(context.pipelineRun.namespace)"
+        - name: manifest
+          value: "$(tasks.create-configuration.results.manifest)"
+      runAfter:
+        - create-configuration
+      taskRef:
+        name: deploy
+      workspaces:
+        - name: source
+          workspace: pipeline-shared-data
+
+  
